@@ -1,0 +1,80 @@
+{% extends "network/layout.html" %} {% block body %}
+
+<div id="profile">
+	<div class="bg-light border border-secondary rounded p-3 mt-1">
+		<div class="d-flex align-items-center mb-2">
+			<div class="fs-4 me-2" id="username">{{user.username}}</div>
+
+			{% if user != request.user %}
+			<button class="btn btn-success" id="follow-btn">
+				{% if user in request.user.following.all %} Unfollow {% else %} Follow
+				{% endif %}
+			</button>
+			{% endif %}
+		</div>
+		<div>
+			<div class="fs-5">
+				Followers: <span id="followers">{{user.followers.count}}</span> |
+				Following: <span id="following">{{user.following.count}}</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="posts">
+	{% for post in posts %}
+
+	<div class="bg-light border border-secondary rounded px-3 pt-3 pb-2 mt-1">
+		<h5>
+			<a href="{% url 'profile' post.user.username %}"
+				>{{post.user.username}}</a
+			>
+		</h5>
+		<p id="post-content-{{post.id}}">{{post.content}}</p>
+
+		{% if post.user == request.user %}
+		<div class="mb-2">
+			<button
+				class="btn btn-sm btn-outline-primary edit-btn"
+				data-post_id="{{post.id}}"
+			>
+				Edit
+			</button>
+		</div>
+		<form class="edit-form" id="edit-form-{{post.id}}">
+			<textarea
+				class="form-control"
+				id="textarea-{{post.id}}"
+				name="content"
+			></textarea>
+			<input type="hidden" name="post-id" id="post-id" value="{{post.id}}" />
+			<button type="submit" class="btn btn-sm btn-outline-primary my-2">
+				Save Post
+			</button>
+		</form>
+		{% endif %}
+
+		<span class="like" data-post_id="{{post.id}}">
+			{% if request.user in post.likes.all %}
+			<i class="bi bi-heart-fill me-2 liked"></i>
+			<span class="like-count liked" data-post_id="{{post.id}}"
+				>{{post.likes.count}}</span
+			>
+			{% else %}
+			<i class="bi bi-heart me-2"></i>
+			<span class="like-count" data-post_id="{{post.id}}"
+				>{{post.likes.count}}</span
+			>
+			{% endif %}
+		</span>
+		<span class="float-end">{{post.timestamp}}</span>
+	</div>
+
+	{% empty %}
+
+	<div class="text-center py-5 text-muted fs-4">Wow, such empty...</div>
+
+	{% endfor %}
+</div>
+
+{% endblock %}

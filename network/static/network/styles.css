@@ -1,0 +1,14 @@
+.like {
+	transition: ease-in-out 0.2s;
+	cursor: pointer;
+	user-select: none;
+}
+
+.like:hover {
+	/* Color from bootstrap btn-success:hover styling */
+	color: hsl(168, 78%, 35%);
+}
+
+.liked {
+	color: hsl(168, 78%, 35%);
+}
